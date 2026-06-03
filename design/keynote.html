@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LAOS · The Crown Is Dissolved</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── Reset & Base ─────────────────────────────────────── */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #0A0A0A;
+    color: #F7F5EE;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* ── Slide Container ──────────────────────────────────── */
+  .slides-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms cubic-bezier(0.22,1,0.36,1), transform 500ms cubic-bezier(0.22,1,0.36,1);
+    transform: scale(0.97);
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  /* ── Slide Inner (16:9) ────────────────────────────────── */
+  .slide-inner {
+    width: 100vw;
+    height: 56.25vw; /* 16:9 */
+    max-height: 100vh;
+    max-width: 177.78vh;
+    position: relative;
+    overflow: hidden;
+  }
+  @media (min-aspect-ratio: 16/9) {
+    .slide-inner { width: 177.78vh; height: 100vh; }
+  }
+
+  /* ── Grid System (16 col, Swiss) ──────────────────────── */
+  .grid-16 {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── Theme Colors ─────────────────────────────────────── */
+  .theme-dark { background: #0A0A0A; color: #F7F5EE; }
+  .theme-paper { background: #F7F5EE; color: #0A0A0A; }
+  .theme-accent { background: #3B1F5E; color: #F7F5EE; }
+  .theme-gold { background: #C8A951; color: #0A0A0A; }
+
+  .accent { color: #3B1F5E; }
+  .gold { color: #C8A951; }
+  .ink { color: #0A0A0A; }
+  .paper { color: #F7F5EE; }
+
+  /* ── Typography ────────────────────────────────────────── */
+  .f-serif { font-family: 'Playfair Display', Georgia, serif; }
+  .f-sans { font-family: 'Inter', system-ui, sans-serif; }
+  .f-tight { font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; }
+  .f-mono { font-family: 'JetBrains Mono', Consolas, monospace; }
+  .fw-4 { font-weight: 400; }
+  .fw-6 { font-weight: 600; }
+  .fw-7 { font-weight: 700; }
+  .fw-9 { font-weight: 900; }
+  .track-s { letter-spacing: -0.02em; }
+  .track-w { letter-spacing: 0.08em; }
+  .upper { text-transform: uppercase; }
+  .italic { font-style: italic; }
+
+  /* ── Utility ──────────────────────────────────────────── */
+  .hairline-b { border-bottom: 1px solid currentColor; }
+  .hairline-t { border-top: 1px solid currentColor; }
+  .hairline-l { border-left: 1px solid currentColor; }
+  .hairline-r { border-right: 1px solid currentColor; }
+  .abs { position: absolute; }
+  .rel { position: relative; }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .flex-col { flex-direction: column; }
+  .p-12 { padding: 48px; }
+  .p-8 { padding: 32px; }
+  .p-6 { padding: 24px; }
+  .gap-4 { gap: 16px; }
+  .gap-6 { gap: 24px; }
+  .gap-8 { gap: 32px; }
+
+  /* ── ASCII Dot Matrix ─────────────────────────────────── */
+  .ascii-matrix {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.35em;
+    opacity: 0.15;
+    white-space: pre;
+  }
+
+  /* ── Card Module ──────────────────────────────────────── */
+  .module-card {
+    border: 1px solid rgba(247,245,238,0.12);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(4px);
+    transition: border-color 300ms, background 300ms;
+  }
+  .module-card:hover {
+    border-color: #C8A951;
+    background: rgba(200,169,81,0.04);
+  }
+  .module-card.light {
+    border-color: rgba(10,10,10,0.1);
+    background: rgba(255,255,255,0.5);
+  }
+  .module-card.light:hover {
+    border-color: #3B1F5E;
+    background: rgba(59,31,94,0.04);
+  }
+  .module-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Inter Tight', sans-serif;
+  }
+  .module-icon.purple { background: #3B1F5E; color: #F7F5EE; }
+  .module-icon.gold { background: #C8A951; color: #0A0A0A; }
+  .module-icon.dark { background: #0A0A0A; color: #F7F5EE; }
+
+  /* ── Value Cards ──────────────────────────────────────── */
+  .value-card {
+    border: 1px solid;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── Progress Bar ─────────────────────────────────────── */
+  .progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #3B1F5E;
+    z-index: 100;
+    transition: width 400ms ease;
+  }
+
+  /* ── Navigation UI ────────────────────────────────────── */
+  .nav-chrome {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 99;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.4;
+    transition: opacity 300ms;
+    color: #F7F5EE;
+  }
+  .nav-chrome:hover { opacity: 0.8; }
+  .nav-btn {
+    background: none;
+    border: 1px solid currentColor;
+    color: inherit;
+    font-family: inherit;
+    font-size: 11px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 200ms;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.1); }
+  .slide-counter { font-variant-numeric: tabular-nums; }
+
+  /* ── Slide-Specific ───────────────────────────────────── */
+
+  /* S01 Cover */
+  .cover-title {
+    font-size: clamp(36px, 6.5vw, 96px);
+    line-height: 0.95;
+  }
+  .cover-subtitle {
+    font-size: clamp(14px, 1.4vw, 24px);
+    opacity: 0.6;
+  }
+  .cover-laurel-line {
+    width: 80px;
+    height: 3px;
+    background: #C8A951;
+  }
+
+  /* Statement slides */
+  .statement-large {
+    font-size: clamp(28px, 5vw, 72px);
+    line-height: 1.1;
+  }
+  .statement-body {
+    font-size: clamp(14px, 1.2vw, 18px);
+    line-height: 1.7;
+    max-width: 480px;
+    opacity: 0.75;
+  }
+
+  /* Architecture grid */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  /* Closing CTA */
+  .cta-line {
+    font-size: clamp(20px, 2vw, 32px);
+    border: 1px solid currentColor;
+    padding: 16px 40px;
+    display: inline-block;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── Responsive ────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .p-12 { padding: 24px; }
+    .arch-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-16 > * { grid-column: 1 / -1; }
+    .statement-large { font-size: clamp(24px, 7vw, 48px); }
+  }
+
+  /* ── Decorative ────────────────────────────────────────── */
+  .crown-symbol {
+    font-size: clamp(48px, 8vw, 120px);
+    opacity: 0.08;
+    position: absolute;
+    right: 5%;
+    bottom: 10%;
+    user-select: none;
+    pointer-events: none;
+  }
+  .divider-gold {
+    width: 48px;
+    height: 2px;
+    background: #C8A951;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slides-wrapper" id="slidesWrapper">
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 1 — TITLE                                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide active" data-slide="0">
+    <div class="slide-inner theme-dark">
+      <div class="grid-16">
+        <div class="flex-center flex-col p-12" style="grid-column:2/16; gap:32px; align-items:flex-start;">
+          <div class="f-mono upper track-w" style="font-size:12px; opacity:0.4;">Laurent Agentic Operational System</div>
+          <div class="cover-laurel-line"></div>
+          <h1 class="f-serif fw-9 cover-title track-s">
+            The Crown<br/>
+            <span class="gold">Is Dissolved</span>
+          </h1>
+          <p class="cover-subtitle f-sans fw-4">From emperor's crown to operator's console.</p>
+          <div class="abs" style="right:80px; top:60px;">
+            <div class="ascii-matrix">
+.::.::.::.::.
+::.::.::.::.::
+.::.::.::.::.
+───────█──────
+──████─█─████──
+──█──█─█─█──█──
+──█──████─█──█──
+──████──█████──
+            </div>
+          </div>
+          <footer class="abs f-mono upper track-w" style="font-size:10px; opacity:0.3; bottom:32px; right:48px;">
+            S01 / 07
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 2 — ATO I: A VELHA ORDEM                        -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="1">
+    <div class="slide-inner theme-paper">
+      <div class="grid-16">
+        <div class="flex-center flex-col p-12" style="grid-column:1/17; align-items:stretch; gap:24px;">
+          <div class="f-mono upper track-w accent" style="font-size:11px;">Ato I — A Velha Ordem</div>
+          <div class="divider-gold"></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:16px;">
+            <div>
+              <p class="statement-large f-serif fw-7 ink">
+                O louro<br/>cingia<br/>o imperador.
+              </p>
+              <p class="statement-body f-sans ink" style="margin-top:24px;">
+                In Rome the laurel was the emperor's. In Athens the oracle
+                spoke only to kings. The laós — the people, the many —
+                watched from the shadows, Subjects of decisions they never
+                helped shape. Systems served the few.
+              </p>
+            </div>
+            <div class="flex-center" style="position:relative;">
+              <div class="crown-symbol" style="color:#0A0A0A; opacity:0.06;">♛</div>
+              <!-- Old hierarchy diagram -->
+              <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+                <div style="border:2px solid #3B1F5E; padding:16px 32px;">
+                  <span class="f-mono upper track-w" style="font-size:12px; color:#3B1F5E;">IMPERATOR</span>
+                </div>
+                <div style="width:2px; height:16px; background:#3B1F5E;"></div>
+                <div style="border:1px solid #3B1F5E; padding:12px 24px; opacity:0.5;">
+                  <span class="f-mono upper track-w" style="font-size:10px; color:#3B1F5E;">LAUREL CROWN</span>
+                </div>
+                <div style="width:2px; height:16px; background:#C8A951;"></div>
+                <div style="border:1px dashed #0A0A0A; padding:12px 24px; opacity:0.25;">
+                  <span class="f-mono upper track-w" style="font-size:10px;">LAÓS — WATCHES</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="f-mono upper track-w" style="font-size:10px; opacity:0.3; position:absolute; bottom:32px; right:48px;">
+            S02 / 07
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 3 — ATO II: A FRATURA                           -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="2">
+    <div class="slide-inner theme-dark">
+      <div class="grid-16">
+        <div class="flex-center flex-col p-12" style="grid-column:2/16; align-items:stretch; gap:16px;">
+          <div class="f-mono upper track-w gold" style="font-size:11px;">Ato II — A Fratura</div>
+          <div class="divider-gold"></div>
+          <p class="statement-large f-serif fw-7" style="margin-top:8px;">
+            AI <span class="gold">inherited</span> the tower.
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; margin-top:16px;">
+            <div class="module-card light-mode" style="border-color:rgba(247,245,238,0.15);">
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.4;">DATA TEAM</div>
+              <span class="f-sans fw-6" style="font-size:15px;">SQL · Warehouses · Pipelines</span>
+              <span style="font-size:12px; opacity:0.5;">The data team owns the truth. But the truth never leaves the mart.</span>
+            </div>
+            <div class="module-card" style="border-color:rgba(247,245,238,0.15);">
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.4;">AI LAB</div>
+              <span class="f-sans fw-6" style="font-size:15px;">Models · Notebooks · Deployments</span>
+              <span style="font-size:12px; opacity:0.5;">The lab owns intelligence. But intelligence never reaches the floor.</span>
+            </div>
+            <div class="module-card" style="border-color:rgba(247,245,238,0.15);">
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.4;">EVERYONE ELSE</div>
+              <span class="f-sans fw-6" style="font-size:15px;">Tickets · Dashboards · Waiting</span>
+              <span style="font-size:12px; opacity:0.5;">The rest of the org waits. Tickets pile. Dashboards stale.</span>
+            </div>
+          </div>
+          <div style="width:100%; height:1px; background:rgba(247,245,238,0.1); margin:16px 0;"></div>
+          <p class="f-sans fw-4" style="font-size:14px; opacity:0.5; max-width:600px;">
+            The fracture is invisible but absolute: data here, intelligence there,
+            decisions nowhere. Three thousand years of hierarchy, rewritten in JavaScript.
+          </p>
+          <footer class="f-mono upper track-w" style="font-size:10px; opacity:0.3; position:absolute; bottom:32px; right:48px;">
+            S03 / 07
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 4 — ATO III: A INVERSÃO                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="3">
+    <div class="slide-inner theme-accent">
+      <div class="grid-16">
+        <div class="flex-center flex-col p-12" style="grid-column:2/16; align-items:center; text-align:center; gap:24px;">
+          <div class="f-mono upper track-w" style="font-size:11px; opacity:0.5;">Ato III — A Inversão</div>
+          <div style="width:48px; height:2px; background:#C8A951;"></div>
+          <h2 class="f-serif fw-9" style="font-size:clamp(32px, 5.5vw, 80px); line-height:1.05;">
+            The laurel becomes<br/>
+            <span style="color:#C8A951;">operational layer</span>
+          </h2>
+          <p class="f-sans fw-4" style="font-size:clamp(14px, 1.3vw, 20px); max-width:700px; opacity:0.8; line-height:1.6;">
+            LAOS dissolves the crown. Laurent Core orchestrates. Laós Layer runs.
+            Talos Mesh guards. The Oracle predicts. The Forum decides.
+            Every operator holds sovereignty over their stack.
+          </p>
+          <div class="f-mono" style="font-size:13px; margin-top:16px; opacity:0.6;">
+            │ 3,000 years of hierarchy ← → one system │
+          </div>
+          <div class="abs ascii-matrix" style="right:48px; top:48px; opacity:0.08;">
+⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗
+⊗  ┌──────────┐  ⊗
+⊗  │ DISSOLVED │  ⊗
+⊗  └──────────┘  ⊗
+⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗⊗
+          </div>
+          <footer class="f-mono upper track-w" style="font-size:10px; opacity:0.3; position:absolute; bottom:32px; right:48px;">
+            S04 / 07
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 5 — ARQUITETURA                                  -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="4">
+    <div class="slide-inner theme-dark">
+      <div class="grid-16" style="padding:48px;">
+        <div style="grid-column:1/17; display:flex; flex-direction:column; gap:32px;">
+          <div class="f-mono upper track-w gold" style="font-size:11px;">Arquitetura</div>
+          <div class="divider-gold"></div>
+          <p class="f-serif fw-7" style="font-size:clamp(20px, 2.5vw, 40px); line-height:1.1; max-width:800px;">
+            Five modules. One <span class="gold">inversion</span>.
+          </p>
+          <div class="arch-grid">
+            <div class="module-card">
+              <div class="module-icon purple">LC</div>
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.5;">MODULE 01</div>
+              <div class="f-sans fw-7" style="font-size:18px;">Laurent Core</div>
+              <div class="f-sans fw-4" style="font-size:12px; opacity:0.6; line-height:1.5;">
+                Orchestration nucleus. The laurel distilled into a decision engine.
+                Routes needs, composes capabilities, governs state.
+              </div>
+            </div>
+            <div class="module-card">
+              <div class="module-icon gold">LΛ</div>
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.5;">MODULE 02</div>
+              <div class="f-sans fw-7" style="font-size:18px;">Laós Layer</div>
+              <div class="f-sans fw-4" style="font-size:12px; opacity:0.6; line-height:1.5;">
+                Agent runtime. The people's layer — sovereign, distributed,
+                where every operator runs their own intelligence.
+              </div>
+            </div>
+            <div class="module-card">
+              <div class="module-icon dark">TM</div>
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.5;">MODULE 03</div>
+              <div class="f-sans fw-7" style="font-size:18px;">Talos Mesh</div>
+              <div class="f-sans fw-4" style="font-size:12px; opacity:0.6; line-height:1.5;">
+                Guardian layer. The first automaton — now architecture.
+                Monitoring, integrity, self-healing across every node.
+              </div>
+            </div>
+            <div class="module-card">
+              <div class="module-icon gold">◇</div>
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.5;">MODULE 04</div>
+              <div class="f-sans fw-7" style="font-size:18px;">The Oracle</div>
+              <div class="f-sans fw-4" style="font-size:12px; opacity:0.6; line-height:1.5;">
+                Predictive intelligence. The oracle as service, not as tyrant —
+                foresight without authority, signal without command.
+              </div>
+            </div>
+            <div class="module-card">
+              <div class="module-icon purple">▣</div>
+              <div class="f-mono upper track-w" style="font-size:10px; opacity:0.5;">MODULE 05</div>
+              <div class="f-sans fw-7" style="font-size:18px;">The Forum</div>
+              <div class="f-sans fw-4" style="font-size:12px; opacity:0.6; line-height:1.5;">
+                Collaboration surface. The agora — where humans deliberate,
+                decide, and direct. Assembly, not dashboard.
+              </div>
+            </div>
+          </div>
+          <footer class="f-mono upper track-w" style="font-size:10px; opacity:0.3; position:absolute; bottom:32px; right:48px;">
+            S05 / 07
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 6 — VALUE PROPS                                   -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="5">
+    <div class="slide-inner theme-paper">
+      <div class="grid-16" style="padding:48px;">
+        <div style="grid-column:1/17; display:flex; flex-direction:column; gap:32px;">
+          <div class="f-mono upper track-w accent" style="font-size:11px;">What LAOS Delivers</div>
+          <div class="divider-gold"></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; margin-top:8px;">
+            <div class="value-card ink" style="border-color:rgba(10,10,10,0.1);">
+              <span class="f-serif fw-9" style="font-size:clamp(32px, 4vw, 56px); color:#3B1F5E;">01</span>
+              <span class="f-sans fw-7" style="font-size:18px;">Agents That Operate</span>
+              <span class="f-sans fw-4" style="font-size:13px; opacity:0.65; line-height:1.6;">
+                Not chatbots. Not copilots. Agents that execute, compose, and
+                deliver — every capability wired through MCP, no GUI required.
+              </span>
+            </div>
+            <div class="value-card ink" style="border-color:rgba(10,10,10,0.1);">
+              <span class="f-serif fw-9" style="font-size:clamp(32px, 4vw, 56px); color:#3B1F5E;">02</span>
+              <span class="f-sans fw-7" style="font-size:18px;">Systems That Serve</span>
+              <span class="f-sans fw-4" style="font-size:13px; opacity:0.65; line-height:1.6;">
+                Data doesn't own decisions. Models don't own the business.
+                Every system reports to the operator who holds the crown.
+              </span>
+            </div>
+            <div class="value-card ink" style="border-color:rgba(10,10,10,0.1);">
+              <span class="f-serif fw-9" style="font-size:clamp(32px, 4vw, 56px); color:#3B1F5E;">03</span>
+              <span class="f-sans fw-7" style="font-size:18px;">Distributed Sovereignty</span>
+              <span class="f-sans fw-4" style="font-size:13px; opacity:0.65; line-height:1.6;">
+                The laós — every operator — runs their own intelligence.
+                Local-first, sovereign, composable. No emperor required.
+              </span>
+            </div>
+          </div>
+          <div class="hairline-t" style="border-color:rgba(10,10,10,0.08); padding-top:24px;">
+            <span class="f-mono upper track-w" style="font-size:11px; color:#3B1F5E;">
+              Spine: "The laurel was exclusive. The intelligence doesn't have to be."
+            </span>
+          </div>
+          <footer class="f-mono upper track-w" style="font-size:10px; opacity:0.3; position:absolute; bottom:32px; right:48px;">
+            S06 / 07
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- SLIDE 7 — CLOSING / CTA                                -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="6">
+    <div class="slide-inner theme-dark">
+      <div class="grid-16">
+        <div class="flex-center flex-col p-12" style="grid-column:2/16; align-items:center; text-align:center; gap:40px;">
+          <div class="f-mono upper track-w" style="font-size:12px; opacity:0.3;">S07 / 07</div>
+          <div style="width:80px; height:3px; background:#C8A951;"></div>
+          <h1 class="f-serif fw-9" style="font-size:clamp(36px, 7vw, 100px); line-height:1; letter-spacing:-0.02em;">
+            Crown the<br/>
+            <span class="gold">operator.</span>
+          </h1>
+          <div class="cta-line f-mono" style="border-color:#C8A951; color:#C8A951;">
+            Get Early Access →
+          </div>
+          <p class="f-sans fw-4" style="font-size:14px; opacity:0.4; max-width:440px; line-height:1.6; margin-top:16px;">
+            The crown is dissolved. The intelligence is distributed.
+            The system serves the laós.
+          </p>
+          <div class="abs ascii-matrix" style="left:48px; bottom:80px; opacity:0.06;">
+::    ::    ::
+  ::  ::  ::
+    :::::
+  ::  ::  ::
+::    ::    ::
+          </div>
+          <footer class="abs f-mono upper track-w" style="font-size:10px; opacity:0.3; bottom:32px; left:50%; transform:translateX(-50%);">
+            LAOS · Laurent Agentic Operational System
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Navigation Chrome -->
+<div class="nav-chrome">
+  <button class="nav-btn" id="prevBtn" aria-label="Previous slide">←</button>
+  <span class="slide-counter" id="slideCounter">01 / 07</span>
+  <button class="nav-btn" id="nextBtn" aria-label="Next slide">→</button>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  const counterEl = document.getElementById('slideCounter');
+  const progressBar = document.getElementById('progressBar');
+
+  function goTo(index) {
+    if (index < 0) index = 0;
+    if (index >= total) index = total - 1;
+    if (index === current) return;
+
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+    });
+
+    current = index;
+    const padded = String(current + 1).padStart(2, '0');
+    counterEl.textContent = padded + ' / ' + String(total).padStart(2, '0');
+    progressBar.style.width = ((current + 1) / total * 100) + '%';
+    window.location.hash = 'slide-' + (current + 1);
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  // Keyboard events
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      goTo(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      goTo(total - 1);
+    }
+  });
+
+  // Button events
+  document.getElementById('nextBtn').addEventListener('click', next);
+  document.getElementById('prevBtn').addEventListener('click', prev);
+
+  // Hash sync
+  function syncFromHash() {
+    const match = window.location.hash.match(/slide-(\d+)/);
+    if (match) {
+      const idx = parseInt(match[1], 10) - 1;
+      if (idx >= 0 && idx < total) {
+        goTo(idx);
+      }
+    }
+  }
+  window.addEventListener('hashchange', syncFromHash);
+
+  // Touch / click on slide halves
+  document.getElementById('slidesWrapper').addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    if (x > rect.width * 0.5) {
+      next();
+    } else {
+      prev();
+    }
+  });
+
+  // Init
+  syncFromHash();
+  progressBar.style.width = ((current + 1) / total * 100) + '%';
+})();
+</script>
+
+</body>
+</html>
