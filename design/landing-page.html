@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LAOS · Laurent Agentic Operational System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── Reset & Base ────────────────────────────────────── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #0A0A0A;
+    color: #F7F5EE;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Variables ───────────────────────────────────────── */
+  :root {
+    --accent: #3B1F5E;
+    --gold: #C8A951;
+    --ink: #0A0A0A;
+    --paper: #F7F5EE;
+    --surface: #0A0A0A;
+    --surface-elevated: #1A1A1A;
+    --surface-raised: #252525;
+    --text-primary: #F7F5EE;
+    --text-secondary: #9C9C9C;
+    --border: #2A2A2A;
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', Consolas, monospace;
+  }
+
+  /* ── Typography ──────────────────────────────────────── */
+  h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height: 1.1; }
+  .display { font-family: var(--font-display); }
+  .mono { font-family: var(--font-mono); }
+  .serif { font-family: var(--font-heading); }
+  .gold { color: var(--gold); }
+  .accent { color: var(--accent); }
+  .text-secondary { color: var(--text-secondary); }
+  .track-w { letter-spacing: 0.08em; }
+  .track-s { letter-spacing: -0.02em; }
+  .upper { text-transform: uppercase; }
+
+  /* ── Section Layout ──────────────────────────────────── */
+  section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .container {
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── Nav ─────────────────────────────────────────────── */
+  .nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    background: rgba(10,10,10,0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(247,245,238,0.06);
+    transition: background 300ms;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 300ms;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-cta {
+    padding: 8px 20px;
+    border: 1px solid var(--gold);
+    color: var(--gold) !important;
+    transition: background 300ms !important;
+  }
+  .nav-cta:hover { background: rgba(200,169,81,0.1); }
+
+  @media (max-width: 768px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+    .nav-bar { padding: 16px; }
+  }
+
+  /* ── HERO ────────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+  }
+  #hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(59,31,94,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 50%, rgba(200,169,81,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-spine {
+    font-family: var(--font-mono);
+    font-size: clamp(10px, 0.9vw, 13px);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+  .hero-line {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 40px;
+  }
+  .hero-title {
+    font-size: clamp(36px, 6vw, 96px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    max-width: 950px;
+    margin: 0 auto;
+  }
+  .hero-title .gold {
+    font-style: italic;
+  }
+  .hero-sub {
+    font-size: clamp(15px, 1.2vw, 20px);
+    color: var(--text-secondary);
+    max-width: 580px;
+    margin: 32px auto 0;
+    line-height: 1.6;
+  }
+  .hero-cta-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-primary {
+    display: inline-block;
+    padding: 14px 36px;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background 300ms, transform 200ms;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: #4D2A75; transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-block;
+    padding: 14px 36px;
+    background: transparent;
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(247,245,238,0.2);
+    transition: border-color 300ms, transform 200ms;
+    cursor: pointer;
+  }
+  .btn-secondary:hover { border-color: var(--gold); transform: translateY(-1px); }
+
+  .hero-scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.4;
+    animation: bounce-down 2s ease-in-out infinite;
+  }
+  @keyframes bounce-down {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ── PROBLEM ─────────────────────────────────────────── */
+  #problem {
+    background: var(--surface-elevated);
+  }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(28px, 3.5vw, 56px);
+    margin-bottom: 24px;
+    max-width: 720px;
+  }
+  .section-body {
+    font-size: clamp(14px, 1.1vw, 17px);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+  .hierarchy-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 48px;
+  }
+  .hierarchy-step {
+    padding: 16px 32px;
+    border: 1px solid;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .hierarchy-step.emp { border-color: var(--accent); color: var(--paper); }
+  .hierarchy-step.crown { border-color: var(--gold); color: var(--gold); opacity: 0.6; }
+  .hierarchy-step.laos { border-color: rgba(247,245,238,0.15); color: var(--text-secondary); opacity: 0.3; border-style: dashed; }
+  .hierarchy-arrow {
+    width: 2px;
+    height: 24px;
+    background: rgba(247,245,238,0.15);
+  }
+
+  /* ── INVERSION ───────────────────────────────────────── */
+  #inversion {
+    position: relative;
+  }
+  #inversion::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(59,31,94,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .inversion-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .inversion-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+  .inversion-arrow-big {
+    font-size: clamp(32px, 4vw, 64px);
+    color: var(--gold);
+    opacity: 0.6;
+    margin: 8px 0;
+  }
+  .old-stack, .new-stack {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .old-stack .stack-item {
+    padding: 12px 20px;
+    border: 1px solid rgba(247,245,238,0.08);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.4;
+  }
+  .new-stack .stack-item {
+    padding: 12px 20px;
+    border: 1px solid var(--gold);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  @media (max-width: 768px) {
+    .inversion-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+
+  /* ── ARCHITECTURE ────────────────────────────────────── */
+  #architecture {
+    background: var(--surface-elevated);
+  }
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+  }
+  .arch-card {
+    padding: 28px 20px;
+    border: 1px solid rgba(247,245,238,0.06);
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 400ms, background 400ms, transform 300ms;
+  }
+  .arch-card:hover {
+    border-color: var(--gold);
+    background: rgba(200,169,81,0.03);
+    transform: translateY(-4px);
+  }
+  .arch-card-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .arch-card-icon.purple { background: var(--accent); color: var(--paper); }
+  .arch-card-icon.gold { background: var(--gold); color: var(--ink); }
+  .arch-card-icon.dark { background: var(--ink); color: var(--paper); border: 1px solid rgba(247,245,238,0.1); }
+  .arch-card .tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+  .arch-card h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .arch-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 1024px) {
+    .arch-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .arch-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── CTA FINAL ───────────────────────────────────────── */
+  #cta-final {
+    min-height: 70vh;
+    text-align: center;
+    flex-direction: column;
+    position: relative;
+  }
+  #cta-final::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(59,31,94,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 50% 80%, rgba(200,169,81,0.04) 0%, transparent 40%);
+    pointer-events: none;
+  }
+  .cta-final-title {
+    font-size: clamp(32px, 5vw, 80px);
+    font-weight: 900;
+    line-height: 1.05;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .cta-final-sub {
+    font-size: clamp(14px, 1.2vw, 18px);
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 24px auto 0;
+    line-height: 1.6;
+  }
+  .cta-final-line {
+    margin-top: 48px;
+  }
+  .btn-final {
+    padding: 18px 48px;
+    background: transparent;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    transition: background 300ms;
+    display: inline-block;
+  }
+  .btn-final:hover { background: rgba(200,169,81,0.08); }
+
+  .footer-bar {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    opacity: 0.3;
+    text-align: center;
+  }
+
+  /* ── Scroll Animations ───────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 600ms cubic-bezier(0.22,1,0.36,1), transform 600ms cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 100ms; }
+  .reveal-delay-2 { transition-delay: 200ms; }
+  .reveal-delay-3 { transition-delay: 300ms; }
+  .reveal-delay-4 { transition-delay: 400ms; }
+  .reveal-delay-5 { transition-delay: 500ms; }
+  .reveal-delay-6 { transition-delay: 600ms; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- NAV                                                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<nav class="nav-bar">
+  <a href="#hero" class="nav-logo">LAOS<span>.</span></a>
+  <div class="nav-links">
+    <a href="#problem">The Problem</a>
+    <a href="#inversion">The Inversion</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#cta-final" class="nav-cta">Get Access</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- HERO                                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container" style="text-align:center;">
+    <div class="hero-spine reveal visible">
+      Laurent Agentic Operational System
+    </div>
+    <div class="hero-line"></div>
+    <h1 class="hero-title reveal visible">
+      The laurel was<br/>
+      <span class="gold">exclusive</span>.<br/>
+      The intelligence<br/>
+      doesn't have to be.
+    </h1>
+    <p class="hero-sub reveal reveal-delay-1 visible">
+      LAOS dissolves the three-thousand-year crown and distributes
+      sovereignty to every operator. From emperor's exclusive to
+      everyone's operational.
+    </p>
+    <div class="hero-cta-group reveal reveal-delay-2 visible">
+      <a href="#cta-final" class="btn-primary">Get Early Access →</a>
+      <a href="#architecture" class="btn-secondary">View Architecture</a>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">Scroll ↓</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PROBLEM                                                -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="problem">
+  <div class="container">
+    <div class="reveal" data-reveal>
+      <span class="section-label">The Old Order</span>
+    </div>
+    <h2 class="section-title reveal" data-reveal>
+      Intelligence has been<br/>
+      <span class="gold">a tower, not a layer.</span>
+    </h2>
+    <p class="section-body reveal reveal-delay-1" data-reveal>
+      Three thousand years of hierarchy: the emperor wore the laurel,
+      the oracle spoke to kings, and the laós — the people — watched.
+      Modern AI inherited the same structure. Data belongs to the data team.
+      Intelligence belongs to the lab. The rest of the organization waits
+      for tickets, stale dashboards, and permission.
+    </p>
+    <div class="hierarchy-visual reveal reveal-delay-2" data-reveal>
+      <div class="hierarchy-step emp">IMPERATOR — LAUREL CROWN</div>
+      <div class="hierarchy-arrow"></div>
+      <div class="hierarchy-step crown">ORACLE — SPEAKS TO KINGS</div>
+      <div class="hierarchy-arrow"></div>
+      <div class="hierarchy-step laos">LAÓS — WATCHES</div>
+      <p class="mono" style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-secondary); opacity:0.3; margin-top:16px;">
+        ÷ this is not democracy. this is hierarchy.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- INVERSION                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="inversion">
+  <div class="container">
+    <div class="reveal" data-reveal>
+      <span class="section-label">The Inversion</span>
+    </div>
+    <h2 class="section-title reveal" data-reveal>
+      From <span class="gold">crown</span><br/>
+      to console.
+    </h2>
+
+    <div class="inversion-grid" style="margin-top:48px;">
+      <div class="reveal reveal-delay-1" data-reveal>
+        <p class="section-body">
+          LAOS doesn't put AI in charge. It dissolves the hierarchy.
+          Laurent Core orchestrates — it doesn't command. Laós Layer runs
+          everywhere — it doesn't gatekeep. Talos Mesh guards — it doesn't
+          control. The Oracle predicts — it doesn't rule. The Forum decides
+          — it doesn't wait.
+        </p>
+        <p class="section-body" style="margin-top:16px;">
+          Every operator holds sovereignty. Local-first. Composable.
+          MCP-wired. No emperor required.
+        </p>
+      </div>
+      <div class="reveal reveal-delay-2" data-reveal>
+        <div class="inversion-visual">
+          <div class="old-stack">
+            <span class="stack-item">Data Team</span>
+            <span class="stack-item">AI Lab</span>
+            <span class="stack-item">Dashboards</span>
+            <span class="stack-item">Tickets</span>
+          </div>
+          <div class="inversion-arrow-big">↓</div>
+          <div class="new-stack">
+            <span class="stack-item">Laurent Core</span>
+            <span class="stack-item">Laós Layer</span>
+            <span class="stack-item">Talos Mesh</span>
+            <span class="stack-item">Oracle</span>
+            <span class="stack-item">Forum</span>
+          </div>
+          <p class="mono gold" style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; margin-top:12px;">
+            The tower → the mesh
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ARCHITECTURE                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="architecture">
+  <div class="container">
+    <div class="reveal" data-reveal>
+      <span class="section-label">System Architecture</span>
+    </div>
+    <h2 class="section-title reveal" data-reveal>
+      Five modules.<br/>
+      <span class="gold">One inversion.</span>
+    </h2>
+    <div class="arch-grid">
+      <div class="arch-card reveal reveal-delay-1" data-reveal>
+        <div class="arch-card-icon purple">LC</div>
+        <span class="tag">Module 01</span>
+        <h3>Laurent Core</h3>
+        <p>Orchestration nucleus. Routes needs, composes capabilities, governs state. The laurel distilled into a decision engine.</p>
+      </div>
+      <div class="arch-card reveal reveal-delay-2" data-reveal>
+        <div class="arch-card-icon gold">LΛ</div>
+        <span class="tag">Module 02</span>
+        <h3>Laós Layer</h3>
+        <p>Agent runtime. Sovereign and distributed — every operator runs their own intelligence. The laós layer is everywhere.</p>
+      </div>
+      <div class="arch-card reveal reveal-delay-3" data-reveal>
+        <div class="arch-card-icon dark">TM</div>
+        <span class="tag">Module 03</span>
+        <h3>Talos Mesh</h3>
+        <p>Guardian layer. The first automaton — now architecture. Monitoring, integrity, and self-healing across every node.</p>
+      </div>
+      <div class="arch-card reveal reveal-delay-4" data-reveal>
+        <div class="arch-card-icon gold">◇</div>
+        <span class="tag">Module 04</span>
+        <h3>The Oracle</h3>
+        <p>Predictive intelligence. The oracle as service, not tyrant — foresight without authority, signal without command.</p>
+      </div>
+      <div class="arch-card reveal reveal-delay-5" data-reveal>
+        <div class="arch-card-icon purple">▣</div>
+        <span class="tag">Module 05</span>
+        <h3>The Forum</h3>
+        <p>Collaboration surface. The agora — where humans deliberate, decide, and direct. Assembly, not dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- CTA FINAL                                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="cta-final">
+  <div class="container" style="text-align:center;">
+    <div class="reveal" data-reveal>
+      <span class="section-label" style="margin-bottom:8px;">Epilogue</span>
+    </div>
+    <h2 class="cta-final-title reveal reveal-delay-1" data-reveal>
+      The crown is <span class="gold">dissolved</span>.<br/>
+      The system <span class="gold">remains</span>.
+    </h2>
+    <p class="cta-final-sub reveal reveal-delay-2" data-reveal>
+      The intelligence is distributed. The hierarchy is inverted.
+      Every operator holds the crown. The laós is sovereign.
+    </p>
+    <div class="cta-final-line reveal reveal-delay-3" data-reveal>
+      <a href="#" class="btn-final">Get Early Access →</a>
+    </div>
+    <div class="reveal reveal-delay-4" data-reveal style="margin-top:48px;">
+      <p class="mono" style="font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); opacity:0.6;">
+        Crown the operator.
+      </p>
+    </div>
+  </div>
+  <div class="footer-bar">
+    LAOS · Laurent Agentic Operational System · 2026
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCROLL REVEAL SCRIPT                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  const revealElements = document.querySelectorAll('[data-reveal]');
+
+  function checkReveals() {
+    const windowHeight = window.innerHeight;
+    revealElements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < windowHeight - 60) {
+        el.classList.add('visible');
+      }
+    });
+  }
+
+  // Check on load, scroll, and resize
+  window.addEventListener('load', checkReveals);
+  window.addEventListener('scroll', checkReveals);
+  window.addEventListener('resize', checkReveals);
+  checkReveals();
+})();
+</script>
+
+</body>
+</html>
